@@ -8,12 +8,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { lostItemsService } from "@/lib/lostItems";
 
 const formSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
   location: z.string().min(2, "Location must be at least 2 characters"),
   contact: z.string().email("Invalid email address"),
+  category: z.string().min(2, "Category must be at least 2 characters"),
+  date: z.string().min(1, "Date is required"),
   image: z.string().optional(),
 });
 
@@ -28,18 +31,35 @@ const NewLostItem = () => {
       description: "",
       location: "",
       contact: "",
+      category: "",
+      date: new Date().toISOString().split('T')[0],
       image: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Here you would typically save to a backend
-    console.log(values);
-    toast({
-      title: "Item reported as lost",
-      description: "Your lost item has been reported successfully",
-    });
-    navigate("/lost-items");
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      await lostItemsService.createLostItem({
+        title: values.title,
+        description: values.description,
+        location: values.location,
+        date: values.date,
+        category: values.category,
+        image: values.image,
+      });
+      
+      toast({
+        title: "Item reported as lost",
+        description: "Your lost item has been reported successfully",
+      });
+      navigate("/lost-items");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to report lost item",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -104,12 +124,44 @@ const NewLostItem = () => {
 
             <FormField
               control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Item category" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date Lost</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="contact"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Contact Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="Your email" {...field} />
+                    <Input
+                      type="email"
+                      placeholder="Your contact email"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -121,32 +173,21 @@ const NewLostItem = () => {
               name="image"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Image</FormLabel>
+                  <FormLabel>Image URL (Optional)</FormLabel>
                   <FormControl>
-                    <Input type="file" accept="image/*" onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        field.onChange(URL.createObjectURL(file));
-                      }
-                    }} />
+                    <Input
+                      placeholder="URL of the item's image"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <div className="flex justify-end gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => navigate("/lost-items")}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" className="bg-amica-accent hover:bg-amica-warm">
-                Submit
-              </Button>
-            </div>
+            <Button type="submit" className="w-full">
+              Report Lost Item
+            </Button>
           </form>
         </Form>
       </div>

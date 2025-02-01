@@ -1,21 +1,34 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Plus, Search, MapPin, Mail } from "lucide-react";
+import { ArrowLeft, Plus, MapPin, Mail, Calendar } from "lucide-react";
+import { lostItemsService, LostItem } from "@/lib/lostItems";
+import { useToast } from "@/components/ui/use-toast";
 
 const LostItems = () => {
-  // Placeholder data - in a real app this would come from a backend
-  const lostItems = [
-    {
-      id: 1,
-      title: "Lost Laptop",
-      description: "MacBook Pro 13-inch, Space Gray",
-      location: "Library",
-      contact: "john@example.com",
-      date: "2024-02-20",
-    },
-    // ... more items would be added here
-  ];
+  const [lostItems, setLostItems] = useState<LostItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchLostItems = async () => {
+      try {
+        const items = await lostItemsService.getAllLostItems();
+        setLostItems(items);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch lost items",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLostItems();
+  }, [toast]);
 
   return (
     <div className="min-h-screen bg-amica-lightest p-8">
@@ -35,26 +48,43 @@ const LostItems = () => {
 
         <h1 className="text-3xl font-playfair mb-8">Lost Items</h1>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {lostItems.map((item) => (
-            <Card key={item.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="text-xl">{item.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">{item.description}</p>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4" />
-                  <span>{item.location}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
-                  <Mail className="w-4 h-4" />
-                  <span>{item.contact}</span>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center py-8">Loading...</div>
+        ) : lostItems.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            No lost items reported yet.
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {lostItems.map((item) => (
+              <Card key={item.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="text-xl">{item.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-4">{item.description}</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="w-4 h-4" />
+                      <span>{item.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Calendar className="w-4 h-4" />
+                      <span>{new Date(item.date).toLocaleDateString()}</span>
+                    </div>
+                    {item.category && (
+                      <div className="text-sm">
+                        <span className="px-2 py-1 bg-amica-light rounded-full text-amica-dark">
+                          {item.category}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

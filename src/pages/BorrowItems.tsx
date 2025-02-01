@@ -1,11 +1,15 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Plus, Calendar, Mail } from "lucide-react";
 
 const BorrowItems = () => {
-  // Placeholder data - in a real app this would come from a backend
-  const borrowRequests = [
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [borrowRequests] = useState([
     {
       id: 1,
       title: "Need Scientific Calculator",
@@ -14,7 +18,12 @@ const BorrowItems = () => {
       contact: "student@example.com",
     },
     // ... more items would be added here
-  ];
+  ]);
+
+  const filteredRequests = borrowRequests.filter((request) =>
+    request.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    request.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-amica-lightest p-8">
@@ -34,9 +43,19 @@ const BorrowItems = () => {
 
         <h1 className="text-3xl font-playfair mb-8">Borrow Requests</h1>
 
+        <div className="mb-6">
+          <Input
+            type="text"
+            placeholder="Search requests..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="max-w-md"
+          />
+        </div>
+
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {borrowRequests.map((item) => (
-            <Card key={item.id} className="hover:shadow-lg transition-shadow">
+          {filteredRequests.map((item) => (
+            <Card key={item.id} className="hover:shadow-lg transition-shadow flex flex-col">
               <CardHeader>
                 <CardTitle className="text-xl">{item.title}</CardTitle>
               </CardHeader>
@@ -51,9 +70,24 @@ const BorrowItems = () => {
                   <span>{item.contact}</span>
                 </div>
               </CardContent>
+              <CardFooter className="mt-auto">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => navigate(`/edit-request/${item.id}`)}
+                >
+                  View Details
+                </Button>
+              </CardFooter>
             </Card>
           ))}
         </div>
+
+        {filteredRequests.length === 0 && (
+          <div className="text-center mt-8">
+            <p className="text-gray-500">No borrow requests found</p>
+          </div>
+        )}
       </div>
     </div>
   );
