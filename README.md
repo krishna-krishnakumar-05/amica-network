@@ -1,69 +1,110 @@
-# Welcome to your Lovable project
+# AMICA 🎯
 
-## Project info
 
-**URL**: https://lovable.dev/projects/cb17f793-6d9f-4ffa-b5b9-aec751f9c533
+## Basic Details
+### Team Name: Code Crafterz
 
-## How can I edit this code?
 
-There are several ways of editing your application.
 
-**Use Lovable**
+### Team Members
+- Member 1:Krishnaja S - College of Engineering Trivandrum
+- Member 2: Jumana K M - College of Engineering Trivandrum
+- Member 3: Farzana B R - College of  Engineering Trivandrum
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/cb17f793-6d9f-4ffa-b5b9-aec751f9c533) and start prompting.
 
-Changes made via Lovable will be committed automatically to this repo.
 
-**Use your preferred IDE**
+### Hosted Project Link
+[mention your project hosted project link here]
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Project Description
+Campus Community Hub
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### The Problem statement
+College students frequently lose personal belongings, struggle to find resources to borrow or lend, and face difficulty in finding companions for various activities. These issues lead to inconvenience, wasted time, and missed opportunities for collaboration within the campus community.
 
-Follow these steps:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### The Solution
+Amica provides a digital campus community hub where students can:
+1. Report & find lost items seamlessly.
+2. Lend & borrow books, gadgets, and other items securely.
+3. Connect with companions for shared activities like studying, travel, or sports.
+The platform will ensure easy navigation, verified listings, and an intuitive user experience, making campus life more convenient, interactive, and collaborative.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Technical Details
+### Technologies/Components Used
+For Software:
+- [Languages used]
+- [Frameworks used]
+- [Libraries used]
+- [Tools used]
 
-# Step 3: Install the necessary dependencies.
-npm i
+For Hardware:
+- [List main components]
+- [List specifications]
+- [List tools required]
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+### Implementation
+For Software:
+# Installation
+git clone https://github.com/your-username/amica.git
+cd amica
 
-**Edit a file directly in GitHub**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+# Run
+[commands]
 
-**Use GitHub Codespaces**
+### Project Documentation
+For Software:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Screenshots (Add at least 3)
+![Screenshot1](Add screenshot 1 here with proper name)
+*Add caption explaining what this shows*
 
-## What technologies are used for this project?
+![Screenshot2](Add screenshot 2 here with proper name)
+*Add caption explaining what this shows*
 
-This project is built with .
+![Screenshot3](Add screenshot 3 here with proper name)
+*Add caption explaining what this shows*
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+# Diagrams
+![Workflow](Add your workflow/architecture diagram here)
+*Add caption explaining your workflow*
 
-## How can I deploy this project?
+For Hardware:
 
-Simply open [Lovable](https://lovable.dev/projects/cb17f793-6d9f-4ffa-b5b9-aec751f9c533) and click on Share -> Publish.
+# Schematic & Circuit
+![Circuit](Add your circuit diagram here)
+*Add caption explaining connections*
 
-## I want to use a custom domain - is that possible?
+![Schematic](Add your schematic diagram here)
+*Add caption explaining the schematic*
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+# Build Photos
+![Team](Add photo of your team here)
+
+
+![Components](Add photo of your components here)
+*List out all components shown*
+
+![Build](Add photos of build process here)
+*Explain the build steps*
+
+![Final](Add photo of final product here)
+*Explain the final build*
+
+### Project Demo
+# Video
+[Add your demo video link here]
+*Explain what the video demonstrates*
+
+# Additional Demos
+[Add any extra demo materials/links]
+
+## Team Contributions
+- Krishnaja S: Backend  development, Testing
+- Farzana B R: UI/UX design, front-end development
+- Jumana K M: Testing, debugging,deployment
+
+
+---
+Made with ❤️ at TinkerHub
