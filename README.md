@@ -63,6 +63,11 @@ For Software:
 ![image](https://github.com/user-attachments/assets/c8f364e8-a226-4efb-bc9e-b347c9b38642)
 
 ![image](https://github.com/user-attachments/assets/81f4a62a-71f0-4520-bb53-04a9587911b5)
+![image](https://github.com/user-attachments/assets/a3325ee1-6597-471f-9c34-654cab291b18)
+![image](https://github.com/user-attachments/assets/adc8a654-85bb-49d4-9004-3283361dee86)
+![image](https://github.com/user-attachments/assets/9479c81f-35b8-43bd-afbf-1be35c2c7e0d)
+
+
 
 
 # Diagrams
