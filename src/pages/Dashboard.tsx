@@ -24,12 +24,12 @@ const Dashboard = () => {
             <ArrowUpRight className="w-5 h-5 text-amica-accent" />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
-            <Link to="/lost" className="dashboard-card">
-              <h3 className="text-xl font-semibold mb-2">Lost Items</h3>
+            <Link to="/lost-items" className="dashboard-card group">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-amica-accent transition-colors">Lost Items</h3>
               <p className="text-muted-foreground">List items you've lost on campus</p>
             </Link>
-            <Link to="/found" className="dashboard-card">
-              <h3 className="text-xl font-semibold mb-2">Found Items</h3>
+            <Link to="/found-items" className="dashboard-card group">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-amica-accent transition-colors">Found Items</h3>
               <p className="text-muted-foreground">Report items you've found</p>
             </Link>
           </div>
@@ -45,12 +45,12 @@ const Dashboard = () => {
             <ArrowUpRight className="w-5 h-5 text-amica-accent" />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
-            <Link to="/lend" className="dashboard-card">
-              <h3 className="text-xl font-semibold mb-2">Lend Items</h3>
+            <Link to="/lend-items" className="dashboard-card group">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-amica-accent transition-colors">Lend Items</h3>
               <p className="text-muted-foreground">Share items with your community</p>
             </Link>
-            <Link to="/borrow" className="dashboard-card">
-              <h3 className="text-xl font-semibold mb-2">Borrow Items</h3>
+            <Link to="/borrow-items" className="dashboard-card group">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-amica-accent transition-colors">Borrow Items</h3>
               <p className="text-muted-foreground">Find items you need</p>
             </Link>
           </div>
@@ -66,12 +66,12 @@ const Dashboard = () => {
             <ArrowUpRight className="w-5 h-5 text-amica-accent" />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
-            <Link to="/create-activity" className="dashboard-card">
-              <h3 className="text-xl font-semibold mb-2">Create Activity</h3>
+            <Link to="/create-activity" className="dashboard-card group">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-amica-accent transition-colors">Create Activity</h3>
               <p className="text-muted-foreground">Start a new group activity</p>
             </Link>
-            <Link to="/find-activity" className="dashboard-card">
-              <h3 className="text-xl font-semibold mb-2">Find Activity</h3>
+            <Link to="/find-activity" className="dashboard-card group">
+              <h3 className="text-xl font-semibold mb-2 group-hover:text-amica-accent transition-colors">Find Activity</h3>
               <p className="text-muted-foreground">Join existing activities</p>
             </Link>
           </div>
