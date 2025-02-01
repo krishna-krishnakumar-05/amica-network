@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/7afd468d-5e36-4da0-beb4-04df0cf1e5c6)# AMICA 🎯
+# AMICA 🎯
 
 
 ## Basic Details
