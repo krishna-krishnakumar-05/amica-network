@@ -23,11 +23,8 @@ const FoundItems = () => {
   const [foundItems, setFoundItems] = useState<FoundItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    fetchFoundItems();
-  }, []);
-
   const fetchFoundItems = async () => {
+    setIsLoading(true);
     try {
       const items = await foundItemService.getAllFoundItems();
       setFoundItems(items);
@@ -41,6 +38,10 @@ const FoundItems = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchFoundItems();
+  }, []);
 
   const filteredItems = foundItems.filter((item) =>
     item.itemName.toLowerCase().includes(searchQuery.toLowerCase()) ||

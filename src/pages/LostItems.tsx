@@ -11,24 +11,25 @@ const LostItems = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchLostItems = async () => {
-      try {
-        const items = await lostItemsService.getAllLostItems();
-        setLostItems(items);
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch lost items",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchLostItems = async () => {
+    setLoading(true);
+    try {
+      const items = await lostItemsService.getAllLostItems();
+      setLostItems(items);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch lost items",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchLostItems();
-  }, [toast]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-amica-lightest p-8">

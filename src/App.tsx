@@ -1,6 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
-import { useAuth } from "./hooks/useAuth";
+import { AuthProvider } from '@/hooks/useAuth';
 
 // Pages
 import Index from "./pages/Index";
@@ -22,92 +22,40 @@ import EditRequest from "./pages/EditRequest";
 import NotFound from "./pages/NotFound";
 
 const App = () => {
-  const { isAuthenticated } = useAuth();
-
   return (
-    <>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<Index />} />
 
-          {/* Dashboard route without authentication check */}
+          {/* Dashboard route */}
           <Route path="/dashboard" element={<Dashboard />} />
 
-          {/* Protected routes */}
-          <Route
-            path="/profile"
-            element={isAuthenticated ? <Profile /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/edit-profile"
-            element={isAuthenticated ? <EditProfile /> : <Navigate to="/" />}
-          />
-
           {/* Lost & Found routes */}
-          <Route
-            path="/lost-items"
-            element={isAuthenticated ? <LostItems /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/lost-items/new"
-            element={isAuthenticated ? <NewLostItem /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/found-items"
-            element={isAuthenticated ? <FoundItems /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/found-items/new"
-            element={isAuthenticated ? <NewFoundItem /> : <Navigate to="/" />}
-          />
+          <Route path="/lost-items" element={<LostItems />} />
+          <Route path="/lost-items/new" element={<NewLostItem />} />
+          <Route path="/found-items" element={<FoundItems />} />
+          <Route path="/found-items/new" element={<NewFoundItem />} />
 
-          {/* Borrow & Lend routes */}
-          <Route
-            path="/borrow-items"
-            element={isAuthenticated ? <BorrowItems /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/borrow-items/new"
-            element={isAuthenticated ? <NewBorrowRequest /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/lend-items"
-            element={isAuthenticated ? <LendItems /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/new-lend-item"
-            element={isAuthenticated ? <NewLendItem /> : <Navigate to="/" />}
-          />
-
-          {/* Activities routes */}
-          <Route
-            path="/find-activity"
-            element={isAuthenticated ? <FindActivity /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/create-activity"
-            element={isAuthenticated ? <CreateActivity /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/new-activity"
-            element={isAuthenticated ? <NewActivity /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/activities/new"
-            element={isAuthenticated ? <NewActivity /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/edit-request/:id"
-            element={isAuthenticated ? <EditRequest /> : <Navigate to="/" />}
-          />
-
-          {/* Catch all route */}
+          {/* Other routes */}
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path="/lend-items" element={<LendItems />} />
+          <Route path="/new-lend-item" element={<NewLendItem />} />
+          <Route path="/borrow-items" element={<BorrowItems />} />
+          <Route path="/new-borrow-request" element={<NewBorrowRequest />} />
+          <Route path="/find-activity" element={<FindActivity />} />
+          <Route path="/new-activity" element={<NewActivity />} />
+          <Route path="/create-activity" element={<CreateActivity />} />
+          <Route path="/edit-request" element={<EditRequest />} />
+          
+          {/* 404 Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </Router>
-      <Toaster />
-    </>
+        <Toaster />
+      </AuthProvider>
+    </Router>
   );
 };
 
