@@ -1,4 +1,4 @@
-# AMICA 🎯
+![image](https://github.com/user-attachments/assets/7afd468d-5e36-4da0-beb4-04df0cf1e5c6)# AMICA 🎯
 
 
 ## Basic Details
@@ -57,14 +57,13 @@ cd amica
 For Software:
 
 # Screenshots (Add at least 3)
-![Screenshot1](Add screenshot 1 here with proper name)
-*Add caption explaining what this shows*
 
-![Screenshot2](Add screenshot 2 here with proper name)
-*Add caption explaining what this shows*
 
-![Screenshot3](Add screenshot 3 here with proper name)
-*Add caption explaining what this shows*
+![image](https://github.com/user-attachments/assets/9c9f29b3-2347-4c59-963e-ecb133734d49)
+![image](https://github.com/user-attachments/assets/c8f364e8-a226-4efb-bc9e-b347c9b38642)
+
+![image](https://github.com/user-attachments/assets/81f4a62a-71f0-4520-bb53-04a9587911b5)
+
 
 # Diagrams
 ![Workflow](Add your workflow/architecture diagram here)
