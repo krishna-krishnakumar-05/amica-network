@@ -1,8 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    navigate('/dashboard');
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -12,7 +17,7 @@ const Index = () => {
           <h1 className="text-5xl font-bold mb-4">Amica Network</h1>
           <p className="text-2xl text-muted-foreground mb-8">Your College Community Hub</p>
           <Button
-            onClick={() => navigate("/auth")}
+            onClick={handleGetStarted}
             size="lg"
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >

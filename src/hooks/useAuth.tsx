@@ -1,102 +1,61 @@
 import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { authService } from '../lib/api';
 import { toast } from '@/components/ui/use-toast';
+import { v4 as uuidv4 } from 'uuid';
 
 interface User {
   id: string;
-  name: string;
-  email: string;
-  bio?: string;
+  [key: string]: any;
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  login: (data: any) => Promise<void>;
+  register: (data: any) => Promise<void>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-// Detailed logging function for frontend
-const logAuthEvent = (type: string, details: Record<string, any>) => {
-  const timestamp = new Date().toISOString();
-  console.log(JSON.stringify({
-    timestamp,
-    type,
-    ...details
-  }));
-};
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
-    if (storedUser && token) {
+    if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
         setIsAuthenticated(true);
-        logAuthEvent('AUTH_RESTORE', { userId: parsedUser.id });
       } catch (error) {
-        logAuthEvent('AUTH_RESTORE_ERROR', { 
-          errorMessage: error instanceof Error ? error.message : 'Unknown error' 
-        });
-        // Clear invalid stored data
         localStorage.removeItem('user');
-        localStorage.removeItem('token');
       }
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (data: any) => {
     try {
-      logAuthEvent('LOGIN_ATTEMPT', { email });
+      // If no data provided, generate a random user
+      const loginData = data || { 
+        id: uuidv4(), 
+        name: `User_${Math.random().toString(36).substr(2, 9)}` 
+      };
 
-      // Input validation
-      if (!email || !password) {
-        const errorMessage = 'Email and password are required';
-        logAuthEvent('LOGIN_VALIDATION_ERROR', { errorMessage });
-        toast({
-          variant: 'destructive',
-          title: 'Login Error',
-          description: errorMessage
-        });
-        throw new Error(errorMessage);
-      }
-
-      const { user, token } = await authService.login({ email, password });
+      const { user } = await authService.login(loginData);
       
-      // Store authentication data
-      localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       
-      // Update auth state
       setUser(user);
       setIsAuthenticated(true);
-
-      logAuthEvent('LOGIN_SUCCESS', { userId: user.id });
       
       toast({
         title: 'Login Successful',
-        description: 'Welcome back!'
+        description: 'Welcome!'
       });
     } catch (error: any) {
-      // Detailed error handling
       const errorMessage = error.response?.data?.message || error.message || 'Login failed';
-      
-      logAuthEvent('LOGIN_ERROR', { 
-        errorMessage,
-        errorDetails: error.response?.data 
-      });
       
       toast({
         variant: 'destructive',
@@ -104,61 +63,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         description: errorMessage
       });
       
-      // Reset authentication state
       setUser(null);
       setIsAuthenticated(false);
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
       
       throw error;
     }
   };
 
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (data: any) => {
     try {
-      logAuthEvent('REGISTER_ATTEMPT', { email, name });
+      // If no data provided, generate a random user
+      const registrationData = data || { 
+        id: uuidv4(), 
+        name: `User_${Math.random().toString(36).substr(2, 9)}` 
+      };
 
-      // Input validation
-      const validationErrors = [];
-      if (!name) validationErrors.push('Name is required');
-      if (!email) validationErrors.push('Email is required');
-      if (!password) validationErrors.push('Password is required');
+      const { user } = await authService.register(registrationData);
       
-      if (validationErrors.length > 0) {
-        const errorMessage = validationErrors.join(', ');
-        logAuthEvent('REGISTER_VALIDATION_ERROR', { errorMessage });
-        toast({
-          variant: 'destructive',
-          title: 'Registration Error',
-          description: errorMessage
-        });
-        throw new Error(errorMessage);
-      }
-
-      const { user, token } = await authService.register({ name, email, password });
-      
-      // Store authentication data
-      localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       
-      // Update auth state
       setUser(user);
       setIsAuthenticated(true);
-
-      logAuthEvent('REGISTER_SUCCESS', { userId: user.id });
       
       toast({
         title: 'Registration Successful',
-        description: 'Your account has been created!'
+        description: 'Welcome to the platform!'
       });
     } catch (error: any) {
-      // Detailed error handling
       const errorMessage = error.response?.data?.message || error.message || 'Registration failed';
-      
-      logAuthEvent('REGISTER_ERROR', { 
-        errorMessage,
-        errorDetails: error.response?.data 
-      });
       
       toast({
         variant: 'destructive',
@@ -166,11 +98,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         description: errorMessage
       });
       
-      // Reset authentication state
       setUser(null);
       setIsAuthenticated(false);
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
       
       throw error;
     }
@@ -178,62 +107,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     try {
-      logAuthEvent('LOGOUT_ATTEMPT', { userId: user?.id });
-
-      // Call backend logout endpoint (optional, as JWT is stateless)
-      authService.logout();
-
-      // Clear local storage
-      localStorage.removeItem('token');
       localStorage.removeItem('user');
-
-      // Reset auth state
+      
       setUser(null);
       setIsAuthenticated(false);
-
-      logAuthEvent('LOGOUT_SUCCESS', {});
       
       toast({
         title: 'Logout Successful',
-        description: 'You have been logged out.'
+        description: 'You have been logged out'
       });
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || 'Logout failed';
-      
-      logAuthEvent('LOGOUT_ERROR', { 
-        errorMessage,
-        errorDetails: error.response?.data 
-      });
+    } catch (error) {
+      console.error('Logout error:', error);
       
       toast({
         variant: 'destructive',
         title: 'Logout Error',
-        description: errorMessage
+        description: 'An error occurred during logout'
       });
     }
   };
 
-  const contextValue: AuthContextType = {
-    user,
-    isAuthenticated,
-    login,
-    register,
-    logout
-  };
-
   return (
-    <AuthContext.Provider value={contextValue}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
-
-export default useAuth;

@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5002/api';
+const API_URL = 'http://localhost:5002';
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: `${API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -72,84 +72,30 @@ api.interceptors.response.use(
   }
 );
 
-// Auth services
+// Completely open auth services
 export const authService = {
-  register: async (data: { name: string; email: string; password: string }) => {
+  register: async (data: any) => {
     try {
-      logApiEvent('REGISTER_ATTEMPT', { 
-        email: data.email 
-      });
-      
       const response = await api.post('/auth/register', data);
-      
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        
-        logApiEvent('REGISTER_SUCCESS', { 
-          userId: response.data.user.id 
-        });
-      }
-      
       return response.data;
     } catch (error: any) {
-      logApiEvent('REGISTER_ERROR', { 
-        errorMessage: error.response?.data?.message || error.message 
-      });
+      console.error('Registration error:', error.response?.data || error.message);
       throw error;
     }
   },
   
-  login: async (data: { email: string; password: string }) => {
+  login: async (data: any) => {
     try {
-      logApiEvent('LOGIN_ATTEMPT', { 
-        email: data.email 
-      });
-      
       const response = await api.post('/auth/login', data);
-      
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        
-        logApiEvent('LOGIN_SUCCESS', { 
-          userId: response.data.user.id 
-        });
-      }
-      
       return response.data;
     } catch (error: any) {
-      logApiEvent('LOGIN_ERROR', { 
-        errorMessage: error.response?.data?.message || error.message 
-      });
+      console.error('Login error:', error.response?.data || error.message);
       throw error;
     }
   },
   
-  logout: async () => {
-    try {
-      logApiEvent('LOGOUT_ATTEMPT', {});
-      
-      const token = localStorage.getItem('token');
-      if (token) {
-        await api.post('/auth/logout', {}, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-      }
-      
-      // Clear local storage
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      
-      logApiEvent('LOGOUT_SUCCESS', {});
-    } catch (error: any) {
-      logApiEvent('LOGOUT_ERROR', { 
-        errorMessage: error.response?.data?.message || error.message 
-      });
-      throw error;
-    }
+  logout: () => {
+    localStorage.removeItem('user');
   }
 };
 

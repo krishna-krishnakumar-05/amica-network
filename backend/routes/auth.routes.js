@@ -1,100 +1,31 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const storage = require('../utils/storage');
+const { v4: uuidv4 } = require('uuid');
 
-// Detailed logging function
-const logAuthEvent = (type, details) => {
-  const timestamp = new Date().toISOString();
-  console.log(JSON.stringify({
-    timestamp,
-    type,
-    ...details
-  }));
-};
-
-// Validation helper
-const validateRegistrationInput = (name, email, password) => {
-  const errors = [];
-  
-  if (!name || name.trim().length < 2) {
-    errors.push('Name must be at least 2 characters long');
-  }
-  
-  if (!email || !/\S+@\S+\.\S+/.test(email)) {
-    errors.push('Invalid email address');
-  }
-  
-  if (!password || password.length < 6) {
-    errors.push('Password must be at least 6 characters long');
-  }
-  
-  return errors;
-};
-
-// Register route
+// Completely open registration route
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    
-    // Validate input
-    const validationErrors = validateRegistrationInput(name, email, password);
-    if (validationErrors.length > 0) {
-      logAuthEvent('REGISTER_VALIDATION_ERROR', { 
-        errors: validationErrors,
-        requestBody: { 
-          name: name ? 'PRESENT' : 'MISSING', 
-          email: email ? 'PRESENT' : 'MISSING' 
-        }
-      });
-      return res.status(400).json({ 
-        message: 'Registration validation failed', 
-        errors: validationErrors 
-      });
-    }
+    // Generate a unique user ID
+    const userId = uuidv4();
 
-    // Check if user already exists
-    const existingUser = await storage.findUserByEmail(email);
-    if (existingUser) {
-      logAuthEvent('REGISTER_USER_EXISTS', { email });
-      return res.status(400).json({ message: 'User already exists with this email' });
-    }
+    // Create user with minimal information
+    const newUser = {
+      id: userId,
+      ...req.body,
+      createdAt: new Date().toISOString()
+    };
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Store the user
+    await storage.createUser(newUser);
 
-    // Create user
-    const user = await storage.createUser({
-      email,
-      password: hashedPassword,
-      name
-    });
-
-    logAuthEvent('REGISTER_SUCCESS', { 
-      userId: user.id, 
-      email: user.email 
-    });
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET || 'your-super-secret-jwt-key-amica-network-2024',
-      { expiresIn: '24h' }
-    );
-
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user;
-
+    // Return the created user
     res.status(201).json({
-      user: userWithoutPassword,
-      token
+      user: newUser,
+      message: 'User created successfully'
     });
   } catch (error) {
-    logAuthEvent('REGISTER_ERROR', { 
-      errorMessage: error.message,
-      errorStack: error.stack 
-    });
+    console.error('Registration error:', error);
     res.status(500).json({ 
       message: 'Registration failed', 
       error: error.message 
@@ -102,63 +33,34 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Login route
+// Open login route that doesn't validate anything
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    // Validate input
-    if (!email || !password) {
-      logAuthEvent('LOGIN_VALIDATION_ERROR', { 
-        errors: ['Email and password are required'],
-        requestBody: { 
-          email: email ? 'PRESENT' : 'MISSING',
-          password: password ? 'PRESENT' : 'MISSING'
-        }
+    // Simply return the user data if it exists
+    const user = await storage.findUserByEmail(req.body.email);
+    
+    if (user) {
+      res.json({
+        user: user,
+        message: 'Login successful'
       });
-      return res.status(400).json({ 
-        message: 'Email and password are required' 
+    } else {
+      // If user doesn't exist, create a new one
+      const newUser = {
+        id: uuidv4(),
+        ...req.body,
+        createdAt: new Date().toISOString()
+      };
+      
+      await storage.createUser(newUser);
+      
+      res.status(201).json({
+        user: newUser,
+        message: 'User created on login'
       });
     }
-
-    // Find user by email
-    const user = await storage.findUserByEmail(email);
-    if (!user) {
-      logAuthEvent('LOGIN_USER_NOT_FOUND', { email });
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
-
-    // Compare passwords
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      logAuthEvent('LOGIN_INVALID_PASSWORD', { email });
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
-
-    logAuthEvent('LOGIN_SUCCESS', { 
-      userId: user.id, 
-      email: user.email 
-    });
-
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET || 'your-super-secret-jwt-key-amica-network-2024',
-      { expiresIn: '24h' }
-    );
-
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user;
-
-    res.json({
-      user: userWithoutPassword,
-      token
-    });
   } catch (error) {
-    logAuthEvent('LOGIN_ERROR', { 
-      errorMessage: error.message,
-      errorStack: error.stack 
-    });
+    console.error('Login error:', error);
     res.status(500).json({ 
       message: 'Login failed', 
       error: error.message 

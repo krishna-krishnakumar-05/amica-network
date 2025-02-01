@@ -66,17 +66,19 @@ const foundItemsRoutes = require('./routes/foundItems.routes');
 const borrowItemsRoutes = require('./routes/borrowItems.routes');
 const lendItemsRoutes = require('./routes/lendItems.routes');
 const activitiesRoutes = require('./routes/activities.routes');
+const postRoutes = require('./routes/post.routes');
 
 // Public routes
 app.use('/api/auth', authRoutes);
 
-// Protected routes
-app.use('/api/users', authenticateToken, userRoutes);
-app.use('/api/lost-items', authenticateToken, lostItemsRoutes);
-app.use('/api/found-items', authenticateToken, foundItemsRoutes);
-app.use('/api/borrow-items', authenticateToken, borrowItemsRoutes);
-app.use('/api/lend-items', authenticateToken, lendItemsRoutes);
-app.use('/api/activities', authenticateToken, activitiesRoutes);
+// Use routes without authentication
+app.use('/api/users', userRoutes);
+app.use('/api/lost-items', lostItemsRoutes);
+app.use('/api/found-items', foundItemsRoutes);
+app.use('/api/borrow-items', borrowItemsRoutes);
+app.use('/api/lend-items', lendItemsRoutes);
+app.use('/api/activities', activitiesRoutes);
+app.use('/api/posts', postRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
